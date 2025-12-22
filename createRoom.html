@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CoMedia — Создание комнаты</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --bg-primary: #121212;
+        --bg-secondary: #1e1e1e;
+        --bg-tertiary: #2d2d2d;
+        --text-primary: #ffffff;
+        --text-secondary: #b3b3b3;
+        --accent: #ff214f; /* Новый розовый акцентный цвет */
+        --accent-hover: #ff527c; /* Светлый оттенок розового для hover */
+        --error: #ff5252;
+        --success: #00c853;
+        --public: #4fc3f7;
+        --private: #ffa726;
+        --border-radius: 12px;
+        --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        --transition: all 0.3s ease;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      /* Шапка из index.html с соответствующими размерами */
+      header {
+        padding: 24px 0;
+        text-align: center;
+        border-bottom: 1px solid var(--bg-tertiary);
+        margin-bottom: 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative;
+      }
+
+      .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+
+      .logo-icon {
+        position: relative;
+        width: 55px; /* Уменьшено для страницы создания комнаты */
+        height: 55px; /* Уменьшено для страницы создания комнаты */
+      }
+
+      .logo-segment {
+        position: absolute;
+        width: 26px; /* Соответственно уменьшено */
+        height: 26px; /* Соответственно уменьшено */
+        background: var(--accent);
+      }
+
+      .segment-1 {
+        top: 0;
+        left: 0;
+        border-radius: 100% 2px 5px 2px;
+      }
+
+      .segment-2 {
+        top: 0;
+        right: 0;
+        border-radius: 2px 100% 2px 5px;
+      }
+
+      .segment-3 {
+        bottom: 0;
+        left: 0;
+        border-radius: 2px 5px 2px 100%;
+      }
+
+      .segment-4 {
+        bottom: 0;
+        right: 0;
+        border-radius: 100% 5px 5px 5px;
+        background: transparent;
+        border: 2px solid var(--accent);
+      }
+
+      .logo-text {
+        display: flex;
+        align-items: center;
+        font-size: 2rem; /* Уменьшено для страницы создания комнаты */
+        font-weight: 800;
+        letter-spacing: -0.5px;
+      }
+
+      .logo-co {
+        color: var(--accent);
+        position: relative;
+        padding-right: 2px;
+      }
+
+      .logo-co:after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: calc(100% + 1px);
+        height: 3px;
+        background: var(--accent);
+        border-radius: 3px 0 0 3px;
+      }
+
+      .logo-media {
+        color: var(--text-primary);
+        position: relative;
+      }
+
+      .logo-media:after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: calc(100% + 1px);
+        height: 3px;
+        background: var(--text-primary);
+        border-radius: 0 3px 3px 0;
+      }
+
+      .back-btn {
+        background: none;
+        border: none;
+        color: var(--text-secondary);
+        font-size: 1.5rem;
+        cursor: pointer;
+        transition: var(--transition);
+        z-index: 10;
+      }
+
+      .back-btn:hover {
+        color: var(--accent);
+      }
+
+      /* Остальные стили формы */
+      .room-type-switcher {
+        display: flex;
+        background: var(--bg-tertiary);
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        margin-bottom: 30px;
+        box-shadow: var(--shadow);
+      }
+
+      .room-type-btn {
+        flex: 1;
+        padding: 16px;
+        border: none;
+        background: none;
+        color: var(--text-secondary);
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .room-type-btn i {
+        font-size: 1.8rem;
+      }
+
+      .room-type-btn.active {
+        background: var(--bg-secondary);
+        color: var(--accent);
+      }
+
+      .room-type-btn.public.active {
+        color: var(--public);
+      }
+
+      .room-type-btn.private.active {
+        color: var(--private);
+      }
+
+      .form-section {
+        background: var(--bg-secondary);
+        border-radius: var(--border-radius);
+        padding: 30px;
+        margin-bottom: 25px;
+        box-shadow: var(--shadow);
+      }
+
+      .form-title {
+        font-size: 1.6rem;
+        margin-bottom: 20px;
+        color: var(--text-primary);
+        position: relative;
+        padding-bottom: 8px;
+        display: inline-block;
+      }
+
+      .form-title::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 3px;
+        background: var(--accent);
+        border-radius: 3px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        font-size: 1.05rem;
+      }
+
+      .form-control {
+        width: 100%;
+        padding: 14px;
+        background: var(--bg-tertiary);
+        border: 1px solid var(--bg-tertiary);
+        border-radius: 8px;
+        color: var(--text-primary);
+        font-size: 1rem;
+        transition: var(--transition);
+      }
+
+      .form-control:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 2px rgba(255, 33, 79, 0.3);
+      }
+
+      textarea.form-control {
+        min-height: 100px;
+        resize: vertical;
+      }
+
+      .password-options {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .password-toggle {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+      }
+
+      .content-preview {
+        display: flex;
+        gap: 15px;
+        margin-top: 15px;
+        padding: 15px;
+        background: var(--bg-tertiary);
+        border-radius: 8px;
+        align-items: center;
+      }
+
+      .content-thumbnail {
+        width: 100px;
+        height: 60px;
+        background: linear-gradient(135deg, #ff214f30, #ff8a8030);
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--accent);
+        font-size: 0.8rem;
+        border: 1px solid var(--accent);
+      }
+
+      .content-details {
+        flex: 1;
+      }
+
+      .content-title {
+        font-weight: 600;
+        margin-bottom: 5px;
+      }
+
+      .content-meta {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+      }
+
+      .room-preview {
+        background: var(--bg-secondary);
+        border-radius: var(--border-radius);
+        padding: 20px;
+        margin-top: 20px;
+        box-shadow: var(--shadow);
+        border: 1px solid rgba(255, 33, 79, 0.3);
+      }
+
+      .preview-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid var(--bg-tertiary);
+      }
+
+      .preview-title {
+        font-size: 1.3rem;
+        color: var(--accent);
+        font-weight: 700;
+      }
+
+      .preview-type {
+        font-size: 0.9rem;
+        padding: 4px 10px;
+        border-radius: 20px;
+        background: var(--public);
+        color: white;
+        font-weight: 500;
+      }
+
+      .preview-type.private {
+        background: var(--private);
+      }
+
+      .preview-content {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px 0;
+      }
+
+      .btn-container {
+        display: flex;
+        gap: 15px;
+        margin-top: 30px;
+        margin-bottom: 40px;
+      }
+
+      .btn {
+        flex: 1;
+        padding: 14px;
+        border: none;
+        border-radius: var(--border-radius);
+        font-weight: 600;
+        font-size: 1.05rem;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        color: white;
+        box-shadow: 0 4px 10px rgba(255, 33, 79, 0.4);
+      }
+
+      .btn-secondary {
+        background: var(--bg-tertiary);
+        color: var(--text-primary);
+        border: 1px solid var(--bg-tertiary);
+      }
+
+      .btn-primary:hover {
+        background: var(--accent-hover);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 15px rgba(255, 33, 79, 0.5);
+      }
+
+      .btn-secondary:hover {
+        background: #3a3a3a;
+        border-color: var(--accent);
+      }
+
+      .password-generator {
+        margin-top: 10px;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+      }
+
+      .password-generator a {
+        color: var(--accent);
+        text-decoration: none;
+        cursor: pointer;
+        font-weight: 500;
+      }
+
+      .password-generator a:hover {
+        text-decoration: underline;
+      }
+
+      .category-select {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 12px;
+        margin-top: 10px;
+      }
+
+      .category-item {
+        background: var(--bg-tertiary);
+        padding: 10px;
+        border-radius: 8px;
+        text-align: center;
+        cursor: pointer;
+        transition: var(--transition);
+        font-size: 0.9rem;
+        border: 1px solid transparent;
+      }
+
+      .category-item:hover,
+      .category-item.active {
+        background: rgba(255, 33, 79, 0.15);
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      .participants-limit {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .limit-control {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .limit-btn {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: var(--bg-tertiary);
+        border: none;
+        color: var(--text-primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: var(--transition);
+      }
+
+      .limit-btn:hover {
+        background: var(--accent);
+        color: white;
+      }
+
+      .limit-value {
+        font-weight: 600;
+        min-width: 40px;
+        text-align: center;
+        color: var(--accent);
+      }
+
+      .private-section {
+        border-left: 3px solid var(--private);
+        padding-left: 15px;
+      }
+
+      .public-section {
+        border-left: 3px solid var(--public);
+        padding-left: 15px;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          padding: 0 15px;
+        }
+
+        .form-section {
+          padding: 20px 15px;
+        }
+
+        .room-type-switcher {
+          flex-direction: column;
+        }
+
+        .btn-container {
+          flex-direction: column;
+        }
+
+        .participants-limit {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+
+        .logo-icon {
+          width: 45px;
+          height: 45px;
+        }
+
+        .logo-text {
+          font-size: 1.7rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        header {
+          flex-direction: row;
+          padding: 15px 0;
+        }
+
+        .logo-container {
+          gap: 10px;
+        }
+
+        .logo-icon {
+          width: 40px;
+          height: 40px;
+        }
+
+        .logo-segment {
+          width: 19px;
+          height: 19px;
+        }
+
+        .logo-text {
+          font-size: 1.5rem;
+        }
+
+        .form-control {
+          padding: 12px;
+        }
+
+        .btn-container {
+          flex-direction: column;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <button class="back-btn" onclick="window.history.back()">
+          <i class="fas fa-arrow-left"></i>
+        </button>
+
+        <div class="logo-container">
+          <div class="logo-icon">
+            <div class="logo-segment segment-1"></div>
+            <div class="logo-segment segment-2"></div>
+            <div class="logo-segment segment-3"></div>
+            <div class="logo-segment segment-4"></div>
+          </div>
+          <div class="logo-text">
+            <span class="logo-co">Co</span>
+            <span class="logo-media">Media</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="room-type-switcher">
+        <button class="room-type-btn public active" data-type="public">
+          <i class="fas fa-globe-americas"></i>
+          <span>Публичная</span>
+        </button>
+        <button class="room-type-btn private" data-type="private">
+          <i class="fas fa-lock"></i>
+          <span>Приватная</span>
+        </button>
+      </div>
+
+      <div class="form-section">
+        <h2 class="form-title">Настройки комнаты</h2>
+
+        <div class="form-group">
+          <label class="form-label">Название комнаты</label>
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Например: Вечер ужасов с друзьями"
+            id="room-name"
+          />
+        </div>
+
+        <div class="form-group public-section">
+          <label class="form-label">Категория</label>
+          <div class="category-select">
+            <div class="category-item active">Фильмы</div>
+            <div class="category-item">Сериалы</div>
+            <div class="category-item">Аниме</div>
+            <div class="category-item">Стримы</div>
+            <div class="category-item">Спорт</div>
+            <div class="category-item">Музыка</div>
+          </div>
+        </div>
+
+        <div class="form-group private-section" style="display: none">
+          <label class="form-label">Пароль</label>
+          <div class="password-options">
+            <input
+              type="password"
+              class="form-control"
+              placeholder="••••••••"
+              id="room-password"
+            />
+            <div class="password-toggle" onclick="togglePasswordVisibility()">
+              <i class="fas fa-eye" id="password-icon"></i>
+            </div>
+          </div>
+          <div class="password-generator">
+            Не придумали пароль?
+            <a href="#" onclick="generatePassword()"
+              >Сгенерировать надежный пароль</a
+            >
+          </div>
+        </div>
+
+        <div class="form-group private-section" style="display: none">
+          <label class="form-label">Максимальное количество участников</label>
+          <div class="participants-limit">
+            <span>Участники:</span>
+            <div class="limit-control">
+              <button class="limit-btn" onclick="changeLimit(-1)">-</button>
+              <span class="limit-value" id="limit-value">8</span>
+              <button class="limit-btn" onclick="changeLimit(1)">+</button>
+            </div>
+            <span>(макс. 20)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-section">
+        <h2 class="form-title">Выбор контента</h2>
+
+        <div class="form-group">
+          <label class="form-label">Вставьте ссылку на контент</label>
+          <input
+            type="url"
+            class="form-control"
+            placeholder="https://youtube.com/watch?v=..."
+            id="media-url"
+          />
+        </div>
+      </div>
+
+      <div class="btn-container">
+        <button class="btn btn-secondary">
+          <i class="fas fa-times"></i> Отмена
+        </button>
+        <button class="btn btn-primary" onclick="createRoom()">
+          <i class="fas fa-check"></i> Создать комнату
+        </button>
+      </div>
+    </div>
+
+    <script>
+      // Переключение типа комнаты
+      document.querySelectorAll(".room-type-btn").forEach((button) => {
+        button.addEventListener("click", () => {
+          // Убираем активные классы у всех кнопок
+          document.querySelectorAll(".room-type-btn").forEach((btn) => {
+            btn.classList.remove("active");
+          });
+
+          // Добавляем активный класс к текущей кнопке
+          button.classList.add("active");
+
+          // Показываем/скрываем секции в зависимости от типа комнаты
+          const roomType = button.getAttribute("data-type");
+
+          if (roomType === "public") {
+            document.querySelectorAll(".public-section").forEach((el) => {
+              el.style.display = "block";
+            });
+            document.querySelectorAll(".private-section").forEach((el) => {
+              el.style.display = "none";
+            });
+            document.querySelectorAll(".category-item").forEach((item) => {
+              item.style.pointerEvents = "auto";
+              item.style.opacity = "1";
+            });
+          } else {
+            document.querySelectorAll(".public-section").forEach((el) => {
+              el.style.display = "none";
+            });
+            document.querySelectorAll(".private-section").forEach((el) => {
+              el.style.display = "block";
+            });
+            document.querySelectorAll(".category-item").forEach((item) => {
+              item.style.pointerEvents = "none";
+              item.style.opacity = "0.5";
+            });
+          }
+        });
+      });
+
+      // Выбор категории
+      document.querySelectorAll(".category-item").forEach((item) => {
+        item.addEventListener("click", function () {
+          // Убираем активный класс у всех категорий
+          document.querySelectorAll(".category-item").forEach((cat) => {
+            cat.classList.remove("active");
+          });
+
+          // Добавляем активный класс к выбранной категории
+          this.classList.add("active");
+
+          // Сохраняем выбранную категорию
+          const selectedCategory = this.textContent;
+          console.log("Выбрана категория:", selectedCategory);
+
+          // Можно добавить сохранение в скрытое поле формы
+          const categoryInput = document.getElementById("selected-category");
+          if (categoryInput) {
+            categoryInput.value = selectedCategory;
+          } else {
+            // Создаем скрытое поле, если его нет
+            const input = document.createElement("input");
+            input.type = "hidden";
+            input.id = "selected-category";
+            input.name = "category";
+            input.value = selectedCategory;
+            document.querySelector("form").appendChild(input);
+          }
+        });
+      });
+
+      // Показать/скрыть пароль
+      function togglePasswordVisibility() {
+        const passwordInput = document.getElementById("room-password");
+        const icon = document.getElementById("password-icon");
+
+        if (passwordInput.type === "password") {
+          passwordInput.type = "text";
+          icon.classList.replace("fa-eye", "fa-eye-slash");
+        } else {
+          passwordInput.type = "password";
+          icon.classList.replace("fa-eye-slash", "fa-eye");
+        }
+      }
+
+      // Генерация пароля
+      function generatePassword() {
+        const chars =
+          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
+        let password = "";
+        for (let i = 0; i < 12; i++) {
+          password += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        document.getElementById("room-password").value = password;
+
+        // Автоматически показываем пароль после генерации
+        const icon = document.getElementById("password-icon");
+        const passwordInput = document.getElementById("room-password");
+        passwordInput.type = "text";
+        icon.classList.replace("fa-eye", "fa-eye-slash");
+      }
+
+      // Изменение лимита участников
+      function changeLimit(delta) {
+        const limitElement = document.getElementById("limit-value");
+        let currentValue = parseInt(limitElement.textContent);
+        let newValue = currentValue + delta;
+
+        if (newValue < 2) newValue = 2;
+        if (newValue > 20) newValue = 20;
+
+        limitElement.textContent = newValue;
+
+        // Сохраняем значение в скрытое поле
+        const limitInput = document.getElementById("selected-limit");
+        if (limitInput) {
+          limitInput.value = newValue;
+        } else {
+          const input = document.createElement("input");
+          input.type = "hidden";
+          input.id = "selected-limit";
+          input.name = "participantLimit";
+          input.value = newValue;
+          document.querySelector("form").appendChild(input);
+        }
+      }
+
+      // Создание комнаты
+      function createRoom() {
+        const roomName = document.getElementById("room-name").value.trim();
+        const roomType = document
+          .querySelector(".room-type-btn.active")
+          .getAttribute("data-type");
+
+        // Проверка обязательных полей
+        if (!roomName) {
+          alert("Пожалуйста, введите название комнаты");
+          document.getElementById("room-name").focus();
+          return;
+        }
+
+        if (roomType === "public") {
+          // Проверка категории для публичной комнаты
+          const selectedCategory = document.querySelector(
+            ".category-item.active"
+          );
+          if (!selectedCategory) {
+            alert("Пожалуйста, выберите категорию для публичной комнаты");
+            return;
+          }
+        }
+
+        const mediaUrl = document.getElementById("media-url").value.trim();
+        if (!mediaUrl) {
+          alert("Пожалуйста, введите ссылку на медиаконтент");
+          document.getElementById("media-url").focus();
+          return;
+        }
+
+        // Проверка URL (базовая валидация)
+        try {
+          new URL(mediaUrl);
+        } catch (e) {
+          alert("Пожалуйста, введите корректную ссылку на медиаконтент");
+          document.getElementById("media-url").focus();
+          return;
+        }
+
+        // Формирование сообщения о создании комнаты
+        let message = `Комната "${roomName}" успешно создана!\n`;
+        message += `Тип: ${
+          roomType === "public" ? "Публичная" : "Приватная"
+        }\n`;
+
+        if (roomType === "public") {
+          const category = document.querySelector(
+            ".category-item.active"
+          ).textContent;
+          message += `Категория: ${category}\n`;
+        } else {
+          const password =
+            document.getElementById("room-password").value || "без пароля";
+          const limit = document.getElementById("limit-value").textContent;
+          message += `Пароль: ${password}\n`;
+          message += `Лимит участников: ${limit}\n`;
+        }
+
+        message += `Медиаконтент: ${mediaUrl}`;
+
+        alert(message);
+        // Здесь будет редирект на страницу комнаты
+        // window.location.href = "createRoom.html?room=" + encodeURIComponent(roomName);
+      }
+
+      // Обновление превью названия комнаты
+      document
+        .getElementById("room-name")
+        .addEventListener("input", function () {
+          const name = this.value || "Название комнаты";
+          // Если есть элемент для предпросмотра названия
+          const previewElement = document.getElementById("preview-room-name");
+          if (previewElement) {
+            previewElement.textContent = name;
+          }
+        });
+
+      // Инициализация при загрузке страницы
+      document.addEventListener("DOMContentLoaded", () => {
+        // Активируем выбор первой категории по умолчанию
+        const firstCategory = document.querySelector(".category-item");
+        if (firstCategory && !document.querySelector(".category-item.active")) {
+          firstCategory.classList.add("active");
+        }
+
+        // Сохраняем лимит участников по умолчанию
+        const defaultLimit = document.getElementById("limit-value").textContent;
+        const limitInput = document.createElement("input");
+        limitInput.type = "hidden";
+        limitInput.id = "selected-limit";
+        limitInput.name = "participantLimit";
+        limitInput.value = defaultLimit;
+        document.querySelector("form").appendChild(limitInput);
+
+        // Сохраняем категорию по умолчанию
+        const defaultCategory = document.querySelector(
+          ".category-item.active"
+        ).textContent;
+        const categoryInput = document.createElement("input");
+        categoryInput.type = "hidden";
+        categoryInput.id = "selected-category";
+        categoryInput.name = "category";
+        categoryInput.value = defaultCategory;
+        document.querySelector("form").appendChild(categoryInput);
+
+        // Обработчик для кнопки "Отмена"
+        document
+          .querySelector(".btn-secondary")
+          .addEventListener("click", function (e) {
+            e.preventDefault();
+            if (
+              confirm(
+                "Вы уверены, что хотите отменить создание комнаты? Все несохраненные данные будут потеряны."
+              )
+            ) {
+              window.location.href = "index.html"; // Возврат на главную страницу
+            }
+          });
+      });
+    </script>
+  </body>
+</html>

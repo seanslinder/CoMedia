@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CoMedia — Совместный просмотр</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --bg-primary: #121212;
+        --bg-secondary: #1e1e1e;
+        --bg-tertiary: #2d2d2d;
+        --text-primary: #ffffff;
+        --text-secondary: #b3b3b3;
+        --accent: #ff214f;
+        --accent-hover: #ff527c;
+        --error: #ff5252;
+        --success: #00c853;
+        --border-radius: 12px;
+        --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        --transition: all 0.3s ease;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      header {
+        padding: 24px 0;
+        text-align: center;
+        border-bottom: 1px solid var(--bg-tertiary);
+        margin-bottom: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      /* Новый логотип CoMedia */
+      .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .logo-icon {
+        position: relative;
+        width: 70px;
+        height: 70px;
+      }
+
+      .logo-segment {
+        position: absolute;
+        width: 33px;
+        height: 33px;
+        background: var(--accent);
+      }
+
+      .segment-1 {
+        top: 0;
+        left: 0;
+        border-radius: 100% 2px 5px 2px;
+      }
+
+      .segment-2 {
+        top: 0;
+        right: 0;
+        border-radius: 2px 100% 2px 5px;
+      }
+
+      .segment-3 {
+        bottom: 0;
+        left: 0;
+        border-radius: 2px 5px 2px 100%;
+      }
+
+      .segment-4 {
+        bottom: 0;
+        right: 0;
+        border-radius: 100% 5px 5px 5px;
+        background: transparent;
+        border: 2px solid var(--accent);
+      }
+
+      .logo-text {
+        display: flex;
+        align-items: center;
+        font-size: 2.5rem;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+      }
+
+      .logo-co {
+        color: var(--accent);
+        position: relative;
+        padding-right: 2px; /* Небольшой отступ между частями */
+      }
+
+      .logo-co:after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: calc(100% + 1px); /* +1px для перекрытия с следующей линией */
+        height: 3px;
+        background: var(--accent);
+        border-radius: 3px 0 0 3px;
+      }
+
+      .logo-media {
+        color: var(--text-primary);
+        position: relative;
+      }
+
+      .logo-media:after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: calc(100% + 1px);
+        height: 3px;
+        background: var(--text-primary);
+        border-radius: 0 3px 3px 0;
+      }
+
+      .section-title {
+        font-size: 1.8rem;
+        margin-bottom: 24px;
+        color: var(--text-primary);
+      }
+
+      .section-subtitle {
+        color: var(--text-secondary);
+        margin-bottom: 16px;
+        font-size: 1.1rem;
+      }
+
+      .rooms-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 24px;
+        margin-top: 20px;
+      }
+
+      .room-card {
+        background: var(--bg-secondary);
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        transition: var(--transition);
+        box-shadow: var(--shadow);
+        cursor: pointer;
+      }
+
+      .room-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+      }
+
+      .room-preview {
+        height: 160px;
+        background: linear-gradient(45deg, #3d3d3d, #5a5a5a);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-secondary);
+        font-size: 1.2rem;
+      }
+
+      .room-content {
+        padding: 16px;
+      }
+
+      .room-title {
+        font-size: 1.3rem;
+        margin-bottom: 8px;
+      }
+
+      .room-content-details {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        margin-bottom: 12px;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .participants-count {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+
+      .join-btn {
+        width: 100%;
+        padding: 10px;
+        background: var(--accent);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+      }
+
+      .join-btn:hover {
+        background: var(--accent-hover);
+      }
+
+      .private-room-section {
+        background: var(--bg-secondary);
+        padding: 30px;
+        border-radius: var(--border-radius);
+        margin-bottom: 40px;
+        box-shadow: var(--shadow);
+      }
+
+      .input-group {
+        margin-bottom: 20px;
+      }
+
+      .input-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+      }
+
+      .input-field {
+        width: 100%;
+        padding: 12px 16px;
+        background: var(--bg-tertiary);
+        border: 1px solid var(--bg-tertiary);
+        border-radius: 8px;
+        color: var(--text-primary);
+        font-size: 1rem;
+        transition: var(--transition);
+      }
+
+      .input-field:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 2px rgba(124, 77, 255, 0.3);
+      }
+
+      .btn-primary {
+        background: var(--accent);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: var(--transition);
+      }
+
+      .btn-primary:hover {
+        background: var(--accent-hover);
+      }
+
+      .create-room {
+        position: fixed;
+        bottom: 24px;
+        right: 18px;
+        z-index: 100;
+      }
+
+      @media (max-width: 768px) {
+        .rooms-grid {
+          grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        }
+
+        .private-room-section {
+          padding: 20px;
+        }
+
+        .logo {
+          font-size: 2rem;
+        }
+
+        .section-title {
+          font-size: 1.5rem;
+        }
+
+        .logo-icon {
+          width: 55px;
+          height: 55px;
+        }
+
+        .logo-text {
+          font-size: 2rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .rooms-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .create-room {
+          width: 90%;
+          left: 50%;
+          right: auto;
+          transform: translateX(-50%);
+        }
+
+        .logo-icon {
+          width: 45px;
+          height: 45px;
+        }
+
+        .logo-text {
+          font-size: 1.7rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <div class="logo-container">
+          <div class="logo-icon">
+            <div class="logo-segment segment-1"></div>
+            <div class="logo-segment segment-2"></div>
+            <div class="logo-segment segment-3"></div>
+            <div class="logo-segment segment-4"></div>
+          </div>
+          <div class="logo-text">
+            <span class="logo-co">Co</span>
+            <span class="logo-media">Media</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="private-room-section">
+        <h2 class="section-title">Присоединиться к комнате</h2>
+        <p class="section-subtitle">
+          Введите код комнаты и пароль, если требуется
+        </p>
+
+        <div class="input-group">
+          <label for="room-code">Код комнаты</label>
+          <input
+            type="text"
+            id="room-code"
+            class="input-field"
+            placeholder="XXXX-XXXX"
+          />
+        </div>
+
+        <div class="input-group">
+          <label for="room-password">Пароль (для приватной комнаты)</label>
+          <input
+            type="password"
+            id="room-password"
+            class="input-field"
+            placeholder="••••••••"
+          />
+        </div>
+
+        <button class="btn-primary" style="width: 100%">Войти в комнату</button>
+      </section>
+
+      <section>
+        <h2 class="section-title">Публичные комнаты онлайн</h2>
+        <p class="section-subtitle">
+          Присоединяйтесь к просмотру с другими пользователями
+        </p>
+
+        <div class="rooms-grid">
+          <!-- Карточка 1 -->
+          <div class="room-card">
+            <div class="room-preview">
+              <i class="fas fa-film"></i>&nbsp Превью контента
+            </div>
+            <div class="room-content">
+              <h3 class="room-title">Марвел марафон</h3>
+              <div class="room-content-details">
+                <span>Сериал: Локи S2</span>
+                <span class="participants-count">
+                  <i class="fas fa-user"></i> 14
+                </span>
+              </div>
+              <button class="join-btn">Присоединиться</button>
+            </div>
+          </div>
+
+          <!-- Карточка 2 -->
+          <div class="room-card">
+            <div
+              class="room-preview"
+              style="background: linear-gradient(45deg, #1e3c72, #2a5298)"
+            >
+              <i class="fas fa-film"></i>&nbsp Превью контента
+            </div>
+            <div class="room-content">
+              <h3 class="room-title">Друзья по вечерам</h3>
+              <div class="room-content-details">
+                <span>Сериал: Друзья S5</span>
+                <span class="participants-count">
+                  <i class="fas fa-user"></i> 27
+                </span>
+              </div>
+              <button class="join-btn">Присоединиться</button>
+            </div>
+          </div>
+
+          <!-- Карточка 3 -->
+          <div class="room-card">
+            <div
+              class="room-preview"
+              style="background: linear-gradient(45deg, #8e0e00, #1f1c18)"
+            >
+              <i class="fas fa-film"></i>&nbsp Превью контента
+            </div>
+            <div class="room-content">
+              <h3 class="room-title">Выходные с Ноланом</h3>
+              <div class="room-content-details">
+                <span>Фильм: Начало</span>
+                <span class="participants-count">
+                  <i class="fas fa-user"></i> 8
+                </span>
+              </div>
+              <button class="join-btn">Присоединиться</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <button class="btn-primary create-room">
+      <i class="fas fa-plus"></i> Создать комнату
+    </button>
+
+    <script>
+      // Генерация случайного ID комнаты: XXXX-XXXX (буквы и цифры)
+      function generateRoomId() {
+        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        let result = "";
+        for (let i = 0; i < 4; i++) {
+          result += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        result += "-";
+        for (let i = 0; i < 4; i++) {
+          result += chars.charAt(Math.floor(Math.random() * chars.length));
+        }
+        return result;
+      }
+
+      // Кнопка "Создать комнату"
+      document.querySelector(".create-room").addEventListener("click", () => {
+        window.location.href = "createRoom.html";
+      });
+
+      // Кнопки "Присоединиться" к публичным комнатам
+      document.querySelectorAll(".join-btn").forEach((btn, index) => {
+        btn.addEventListener("click", () => {
+          const roomId = generateRoomId(); // Можно хранить в реальном приложении
+          window.location.href = `room.html?id=${roomId}`;
+        });
+      });
+
+      // Кнопка "Войти в приватную комнату"
+      document
+        .querySelector(".btn-primary:not(.create-room)")
+        .addEventListener("click", () => {
+          const code = document.getElementById("room-code").value.trim();
+          if (code) {
+            // Имитация успешного входа (в реальности — проверка по API)
+            window.location.href = `room.html?id=${code}`;
+          } else {
+            alert("Пожалуйста, введите код комнаты");
+          }
+        });
+    </script>
+  </body>
+</html>

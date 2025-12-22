@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CoMedia — Комната просмотра</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --bg-primary: #121212;
+        --bg-secondary: #1e1e1e;
+        --bg-tertiary: #2d2d2d;
+        --text-primary: #ffffff;
+        --text-secondary: #b3b3b3;
+        --accent: #ff214f;
+        --accent-hover: #ff527c;
+        --public: #4fc3f7;
+        --private: #ffa726;
+        --border-radius: 12px;
+        --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        --transition: all 0.3s ease;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+        line-height: 1.6;
+        overflow-x: hidden;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* Шапка */
+      .room-header {
+        padding: 16px 20px;
+        border-bottom: 1px solid var(--bg-tertiary);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background: var(--bg-secondary);
+        z-index: 100;
+        box-shadow: var(--shadow);
+      }
+
+      .logo-container {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .logo-icon {
+        position: relative;
+        width: 40px;
+        height: 40px;
+      }
+
+      .logo-segment {
+        position: absolute;
+        width: 18px;
+        height: 18px;
+        background: var(--accent);
+      }
+
+      .segment-1 {
+        top: 0;
+        left: 0;
+        border-radius: 100% 2px 5px 2px;
+      }
+
+      .segment-2 {
+        top: 0;
+        right: 0;
+        border-radius: 2px 100% 2px 5px;
+      }
+
+      .segment-3 {
+        bottom: 0;
+        left: 0;
+        border-radius: 2px 5px 2px 100%;
+      }
+
+      .segment-4 {
+        bottom: 0;
+        right: 0;
+        border-radius: 100% 5px 5px 5px;
+        background: transparent;
+        border: 2px solid var(--accent);
+      }
+
+      .logo-text {
+        display: flex;
+        align-items: flex-end; /* Выравнивание по нижнему краю */
+        font-size: 1.6rem;
+        font-weight: 800;
+        letter-spacing: -0.5px;
+        height: 40px; /* Фиксированная высота для выравнивания с логотипом */
+      }
+
+      .logo-co {
+        color: var(--accent);
+        position: relative;
+        padding-right: 2px;
+      }
+
+      .logo-co:after {
+        content: "";
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        width: calc(100% + 1px);
+        height: 2px;
+        background: var(--accent);
+        border-radius: 3px 0 0 3px;
+      }
+
+      .logo-media {
+        color: var(--text-primary);
+        position: relative;
+      }
+
+      .logo-media:after {
+        content: "";
+        position: absolute;
+        bottom: -4px;
+        left: 0;
+        width: calc(100% + 1px);
+        height: 2px;
+        background: var(--text-primary);
+        border-radius: 0 3px 3px 0;
+      }
+
+      .room-info {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-left: 30px;
+      }
+
+      .room-name {
+        font-size: 1.4rem;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+
+      .room-type {
+        font-size: 0.85rem;
+        padding: 4px 12px;
+        border-radius: 12px;
+        background: var(--private);
+        color: white;
+        font-weight: 500;
+      }
+
+      .room-type.public {
+        background: var(--public);
+      }
+
+      .header-controls {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .control-btn {
+        background: var(--bg-tertiary);
+        border: none;
+        color: var(--text-primary);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: var(--transition);
+        font-size: 1.1rem;
+      }
+
+      .control-btn:hover {
+        background: var(--accent);
+        color: white;
+        transform: scale(1.05);
+      }
+
+      .leave-btn {
+        background: var(--accent);
+        color: white;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 20px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .leave-btn:hover {
+        background: var(--accent-hover);
+        transform: translateY(-2px);
+      }
+
+      /* Основной контейнер комнаты */
+      .room-container {
+        display: flex;
+        flex: 1;
+        overflow: hidden;
+      }
+
+      /* Медиа-область */
+      .media-area {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+        background: var(--bg-primary);
+      }
+
+      .player-wrapper {
+        position: relative;
+        background: #000;
+        border-radius: var(--border-radius);
+        overflow: hidden;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .player-placeholder {
+        text-align: center;
+        padding: 30px;
+      }
+
+      .player-icon {
+        font-size: 4rem;
+        color: var(--accent);
+        margin-bottom: 20px;
+      }
+
+      .player-title {
+        font-size: 1.8rem;
+        margin-bottom: 10px;
+        color: var(--text-primary);
+      }
+
+      .player-subtitle {
+        color: var(--text-secondary);
+        font-size: 1rem;
+      }
+
+      .media-info {
+        padding: 20px 0 10px;
+      }
+
+      .media-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 5px;
+      }
+
+      .media-meta {
+        color: var(--text-secondary);
+        font-size: 0.95rem;
+        display: flex;
+        gap: 15px;
+      }
+
+      /* Боковая панель */
+      .sidebar {
+        width: 320px;
+        background: var(--bg-secondary);
+        border-left: 1px solid var(--bg-tertiary);
+        display: flex;
+        flex-direction: column;
+        box-shadow: -4px 0 12px rgba(0, 0, 0, 0.2);
+      }
+
+      .tabs {
+        display: flex;
+        border-bottom: 1px solid var(--bg-tertiary);
+        background: var(--bg-tertiary);
+      }
+
+      .tab {
+        flex: 1;
+        padding: 14px;
+        text-align: center;
+        cursor: pointer;
+        font-weight: 500;
+        transition: var(--transition);
+        border-bottom: 3px solid transparent;
+      }
+
+      .tab:hover {
+        background: rgba(255, 33, 79, 0.1);
+      }
+
+      .tab.active {
+        color: var(--accent);
+        border-bottom: 3px solid var(--accent);
+      }
+
+      .tab-content {
+        flex: 1;
+        padding: 20px;
+        overflow-y: auto;
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      /* Чат */
+      .chat-messages {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-bottom: 15px;
+        height: calc(100% - 70px);
+        overflow-y: auto;
+      }
+
+      .message {
+        background: var(--bg-tertiary);
+        padding: 12px 15px;
+        border-radius: 12px;
+        max-width: 85%;
+        align-self: flex-start; /* По умолчанию сообщения слева */
+      }
+
+      .message.user-message {
+        align-self: flex-end; /* Сообщения пользователя справа */
+        background: rgba(255, 33, 79, 0.15);
+        border-left: 3px solid var(--accent);
+      }
+
+      .message.system {
+        background: rgba(255, 33, 79, 0.1);
+        border-left: 3px solid var(--accent);
+        padding-left: 12px;
+        align-self: center;
+        max-width: 90%;
+        text-align: center;
+        font-style: italic;
+      }
+
+      .message-header {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 5px;
+      }
+
+      .message-author {
+        font-weight: 600;
+        color: var(--accent);
+      }
+
+      .message-time {
+        color: var(--text-secondary);
+        font-size: 0.8rem;
+      }
+
+      .message-text {
+        line-height: 1.5;
+        word-break: break-word;
+      }
+
+      .chat-input-container {
+        display: flex;
+        gap: 10px;
+        margin-top: auto;
+      }
+
+      .chat-input {
+        flex: 1;
+        padding: 12px 15px;
+        background: var(--bg-tertiary);
+        border: 1px solid var(--bg-tertiary);
+        border-radius: 20px;
+        color: var(--text-primary);
+        font-size: 0.95rem;
+        transition: var(--transition);
+      }
+
+      .chat-input:focus {
+        outline: none;
+        border-color: var(--accent);
+        box-shadow: 0 0 0 2px rgba(255, 33, 79, 0.2);
+      }
+
+      .chat-send-btn {
+        background: var(--accent);
+        color: white;
+        border: none;
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        cursor: pointer;
+        transition: var(--transition);
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .chat-send-btn:hover {
+        background: var(--accent-hover);
+        transform: scale(1.05);
+      }
+
+      /* Участники */
+      .participants-list {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .participant {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        background: var(--bg-tertiary);
+        border-radius: var(--border-radius);
+        transition: var(--transition);
+      }
+
+      .participant:hover {
+        background: rgba(255, 33, 79, 0.1);
+        transform: translateX(5px);
+      }
+
+      .avatar {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--accent), #ff8a80);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: white;
+        font-size: 1.1rem;
+      }
+
+      .participant-info {
+        flex: 1;
+      }
+
+      .participant-name {
+        font-weight: 600;
+        margin-bottom: 3px;
+      }
+
+      .participant-role {
+        font-size: 0.85rem;
+        color: var(--accent);
+        font-weight: 500;
+      }
+
+      .invite-section {
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid var(--bg-tertiary);
+      }
+
+      .invite-btn {
+        width: 100%;
+        padding: 12px;
+        background: transparent;
+        border: 2px solid var(--accent);
+        color: var(--accent);
+        border-radius: var(--border-radius);
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+      }
+
+      .invite-btn:hover {
+        background: var(--accent);
+        color: white;
+      }
+
+      /* Голосовой чат (для приватных комнат) */
+      .voice-controls {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 20px;
+        justify-content: center;
+      }
+
+      .voice-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 60px;
+        height: 60px;
+        background: var(--bg-tertiary);
+        border: none;
+        border-radius: 50%;
+        color: var(--text-primary);
+        cursor: pointer;
+        transition: var(--transition);
+        font-size: 1.5rem;
+      }
+
+      .voice-btn:hover {
+        background: rgba(255, 33, 79, 0.1);
+        transform: scale(1.05);
+      }
+
+      .voice-btn.active {
+        background: rgba(255, 33, 79, 0.2);
+        color: var(--accent);
+      }
+
+      .voice-participants {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      /* Нижняя панель управления */
+      .control-bar {
+        height: 70px;
+        background: var(--bg-secondary);
+        border-top: 1px solid var(--bg-tertiary);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.2);
+      }
+
+      .player-controls {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+
+      .player-control-btn {
+        background: none;
+        border: none;
+        color: var(--text-primary);
+        font-size: 1.3rem;
+        cursor: pointer;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: var(--transition);
+      }
+
+      .player-control-btn:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .player-control-btn.play-btn {
+        background: var(--accent);
+        color: white;
+      }
+
+      .player-control-btn.play-btn:hover {
+        background: var(--accent-hover);
+        transform: scale(1.05);
+      }
+
+      #play-icon {
+        margin: 2.5px 0 0 2.5px;
+      }
+
+      .sync-status {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+      }
+
+      .sync-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #4caf50; /* Зеленый по умолчанию */
+      }
+
+      .sync-dot.syncing {
+        background: #ff9800; /* Желтый при синхронизации */
+        animation: pulse 2s infinite;
+      }
+
+      .additional-controls {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      @keyframes pulse {
+        0% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+        100% {
+          opacity: 1;
+        }
+      }
+
+      /* Адаптивность */
+      @media (max-width: 1024px) {
+        .sidebar {
+          width: 280px;
+        }
+
+        .room-name {
+          font-size: 1.2rem;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .room-container {
+          flex-direction: column;
+        }
+
+        .sidebar {
+          width: 100%;
+          height: 40vh;
+          border-left: none;
+          border-top: 1px solid var(--bg-tertiary);
+        }
+
+        .media-area {
+          padding: 15px;
+        }
+
+        .room-header {
+          padding: 12px 15px;
+        }
+
+        .logo-text {
+          font-size: 1.3rem;
+          height: 35px;
+        }
+
+        .logo-icon {
+          width: 35px;
+          height: 35px;
+        }
+
+        .logo-segment {
+          width: 15px;
+          height: 15px;
+        }
+
+        .header-controls {
+          gap: 10px;
+        }
+
+        .control-btn {
+          width: 35px;
+          height: 35px;
+        }
+
+        .leave-btn {
+          padding: 6px 15px;
+          font-size: 0.9rem;
+        }
+
+        .room-info {
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 5px;
+          margin-left: 15px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .room-info {
+          margin-left: 15px;
+        }
+
+        .room-name {
+          font-size: 1rem;
+        }
+
+        .room-type {
+          font-size: 0.7rem;
+          padding: 2px 8px;
+        }
+
+        .player-title {
+          font-size: 1.4rem;
+        }
+
+        .player-icon {
+          font-size: 3rem;
+        }
+
+        .control-bar {
+          padding: 0 10px;
+          height: 60px;
+        }
+
+        .player-controls {
+          gap: 10px;
+        }
+
+        .player-control-btn {
+          width: 35px;
+          height: 35px;
+          font-size: 1.1rem;
+        }
+
+        .player-control-btn.play-btn {
+          width: 40px;
+          height: 40px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Шапка комнаты -->
+    <header class="room-header">
+      <div class="logo-container">
+        <div class="logo-icon">
+          <div class="logo-segment segment-1"></div>
+          <div class="logo-segment segment-2"></div>
+          <div class="logo-segment segment-3"></div>
+          <div class="logo-segment segment-4"></div>
+        </div>
+        <div class="logo-text">
+          <span class="logo-co">Co</span>
+          <span class="logo-media">Media</span>
+        </div>
+
+        <div class="room-info">
+          <div class="room-name">Вечер ужасов с друзьями</div>
+          <div class="room-type">Приватная</div>
+        </div>
+      </div>
+
+      <div class="header-controls">
+        <button class="control-btn" title="Поделиться комнатой">
+          <i class="fas fa-share-alt"></i>
+        </button>
+        <button class="control-btn" title="Настройки комнаты">
+          <i class="fas fa-cog"></i>
+        </button>
+        <button class="leave-btn" onclick="leaveRoom()">
+          <i class="fas fa-sign-out-alt"></i>
+          Покинуть
+        </button>
+      </div>
+    </header>
+
+    <!-- Основной контейнер -->
+    <div class="room-container">
+      <!-- Медиа-область -->
+      <div class="media-area">
+        <div class="player-wrapper">
+          <div class="player-placeholder">
+            <div class="player-icon">
+              <i class="fas fa-film"></i>
+            </div>
+            <div class="player-title">Интерстеллар</div>
+            <div class="player-subtitle">Научно-фантастический фильм, 2014</div>
+          </div>
+        </div>
+
+        <div class="media-info">
+          <div class="media-title">Интерстеллар</div>
+          <div class="media-meta">
+            <span>Длительность: 2ч 49м</span>
+            <span>Качество: 1080p</span>
+            <span>Зрителей: 8/12</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Боковая панель -->
+      <div class="sidebar">
+        <!-- Вкладки -->
+        <div class="tabs">
+          <div class="tab active" onclick="switchTab('chat')">
+            <i class="fas fa-comment-alt"></i>
+          </div>
+          <div class="tab" onclick="switchTab('participants')">
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="tab" onclick="switchTab('voice')">
+            <i class="fas fa-microphone"></i>
+          </div>
+        </div>
+
+        <!-- Содержимое вкладки "Чат" -->
+        <div class="tab-content active" id="chat-tab">
+          <div class="chat-messages">
+            <div class="message">
+              <div class="message-header">
+                <span class="message-author">Анна</span>
+                <span class="message-time">19:02</span>
+              </div>
+              <div class="message-text">Привет всем!</div>
+            </div>
+
+            <div class="message">
+              <div class="message-header">
+                <span class="message-author">Макс</span>
+                <span class="message-time">19:03</span>
+              </div>
+              <div class="message-text">Привет!</div>
+            </div>
+
+            <div class="message system">
+              <div class="message-text">Ботир поставил на паузу</div>
+            </div>
+
+            <div class="message">
+              <div class="message-header">
+                <span class="message-author">Сергей</span>
+                <span class="message-time">19:04</span>
+              </div>
+              <div class="message-text">
+                Какой эпичный фильм! Смотрел уже 3 раза
+              </div>
+            </div>
+
+            <div class="message user-message">
+              <div class="message-header">
+                <span class="message-author">Ботир</span>
+                <span class="message-time">19:06</span>
+              </div>
+              <div class="message-text">Давайте продолжим просмотр!</div>
+            </div>
+          </div>
+
+          <div class="chat-input-container">
+            <input
+              type="text"
+              class="chat-input"
+              placeholder="Напишите сообщение..."
+            />
+            <button class="chat-send-btn">
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Содержимое вкладки "Участники" -->
+        <div class="tab-content" id="participants-tab">
+          <div class="participants-list">
+            <div class="participant">
+              <div class="avatar">А</div>
+              <div class="participant-info">
+                <div class="participant-name">Ботир</div>
+                <div class="participant-role">Создатель</div>
+              </div>
+            </div>
+
+            <div class="participant">
+              <div class="avatar">М</div>
+              <div class="participant-info">
+                <div class="participant-name">Макс</div>
+                <div class="participant-role">Участник</div>
+              </div>
+            </div>
+
+            <div class="participant">
+              <div class="avatar">С</div>
+              <div class="participant-info">
+                <div class="participant-name">Сергей</div>
+                <div class="participant-role">Участник</div>
+              </div>
+            </div>
+
+            <div class="participant">
+              <div class="avatar">Л</div>
+              <div class="participant-info">
+                <div class="participant-name">Лиза</div>
+                <div class="participant-role">Участник</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="invite-section">
+            <button class="invite-btn">
+              <i class="fas fa-user-plus"></i>
+              Пригласить участников
+            </button>
+          </div>
+        </div>
+
+        <!-- Содержимое вкладки "Голосовой чат" -->
+        <div class="tab-content" id="voice-tab">
+          <!-- В HTML измените вызов функции -->
+          <div class="voice-controls">
+            <button
+              class="voice-btn active"
+              onclick="toggleMicrophone(this)"
+              title="Микрофон"
+            >
+              <i class="fas fa-microphone"></i>
+            </button>
+
+            <button
+              class="voice-btn active"
+              onclick="toggleHeadphones(this)"
+              title="Наушники"
+            >
+              <i class="fas fa-volume-up"></i>
+            </button>
+          </div>
+
+          <div class="voice-participants">
+            <div class="participant">
+              <div class="avatar">А</div>
+              <div class="participant-info">
+                <div class="participant-name">Анна</div>
+                <div class="participant-role">Говорит...</div>
+              </div>
+            </div>
+
+            <div class="participant">
+              <div class="avatar">М</div>
+              <div class="participant-info">
+                <div class="participant-name">Макс</div>
+                <div class="participant-role">Слушает</div>
+              </div>
+            </div>
+
+            <div class="participant">
+              <div class="avatar">С</div>
+              <div class="participant-info">
+                <div class="participant-name">Сергей</div>
+                <div class="participant-role">Слушает</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Нижняя панель управления -->
+    <div class="control-bar">
+      <div class="player-controls">
+        <button class="player-control-btn" title="Предыдущее">
+          <i class="fas fa-step-backward"></i>
+        </button>
+
+        <button
+          class="player-control-btn play-btn"
+          title="Воспроизведение/Пауза"
+          onclick="togglePlay()"
+        >
+          <i class="fas fa-play" id="play-icon"></i>
+        </button>
+
+        <button class="player-control-btn" title="Следующее">
+          <i class="fas fa-step-forward"></i>
+        </button>
+
+        <div style="margin-left: 15px">
+          <span id="current-time">00:00</span> /
+          <span id="total-time">02:49:00</span>
+        </div>
+      </div>
+
+      <div class="sync-status">
+        <div class="sync-dot" id="sync-dot"></div>
+        <span id="sync-text">Синхронизировано</span>
+      </div>
+
+      <div class="additional-controls">
+        <button class="player-control-btn" title="Громкость">
+          <i class="fas fa-volume-up"></i>
+        </button>
+
+        <button class="player-control-btn" title="Полный экран">
+          <i class="fas fa-expand"></i>
+        </button>
+
+        <button class="player-control-btn" title="Плейлист">
+          <i class="fas fa-list"></i>
+        </button>
+      </div>
+    </div>
+
+    <script>
+      // Переключение вкладок
+      function switchTab(tabName) {
+        // Убираем активные классы
+        document.querySelectorAll(".tab").forEach((tab) => {
+          tab.classList.remove("active");
+        });
+
+        document.querySelectorAll(".tab-content").forEach((content) => {
+          content.classList.remove("active");
+        });
+
+        // Активируем выбранную вкладку
+        let tabIndex;
+        if (tabName === "chat") tabIndex = 0;
+        else if (tabName === "participants") tabIndex = 1;
+        else if (tabName === "voice") tabIndex = 2;
+
+        document.querySelectorAll(".tab")[tabIndex].classList.add("active");
+        document.getElementById(tabName + "-tab").classList.add("active");
+      }
+
+      // Управление воспроизведением
+      let isPlaying = false;
+      function togglePlay() {
+        isPlaying = !isPlaying;
+        const icon = document.getElementById("play-icon");
+        const syncDot = document.getElementById("sync-dot");
+        const syncText = document.getElementById("sync-text");
+
+        if (isPlaying) {
+          icon.classList.remove("fa-play");
+          icon.classList.add("fa-pause");
+          syncDot.classList.add("syncing");
+          syncDot.classList.remove("syncing"); // Убираем зеленый, добавляем желтый через класс
+          syncDot.style.background = "#ff9800"; // Желтый
+          syncText.textContent = "Синхронизация";
+        } else {
+          icon.classList.remove("fa-pause");
+          icon.classList.add("fa-play");
+          syncDot.classList.remove("syncing");
+          syncDot.style.background = "#4caf50"; // Зеленый
+          syncText.textContent = "Синхронизировано";
+        }
+      }
+
+      // Переписанные функции с передачей элемента
+      function toggleMicrophone(button) {
+        const icon = button.querySelector("i");
+
+        if (button.classList.contains("active")) {
+          button.classList.remove("active");
+          icon.classList.remove("fa-microphone");
+          icon.classList.add("fa-microphone-slash");
+        } else {
+          button.classList.add("active");
+          icon.classList.remove("fa-microphone-slash");
+          icon.classList.add("fa-microphone");
+        }
+      }
+
+      function toggleHeadphones(button) {
+        const icon = button.querySelector("i");
+
+        if (button.classList.contains("active")) {
+          button.classList.remove("active");
+          icon.classList.remove("fa-volume");
+          icon.classList.add("fa-volume-off");
+        } else {
+          button.classList.add("active");
+          icon.classList.remove("fa-volume-off");
+          icon.classList.add("fa-volume");
+        }
+      }
+
+      // Покинуть комнату
+      function leaveRoom() {
+        if (confirm("Вы уверены, что хотите покинуть комнату?")) {
+          alert("Вы покинули комнату");
+          // Здесь будет редирект на главную страницу
+          window.location.href = "index.html";
+        }
+      }
+
+      // Отправка сообщения
+      document
+        .querySelector(".chat-send-btn")
+        .addEventListener("click", sendMessage);
+      document
+        .querySelector(".chat-input")
+        .addEventListener("keypress", function (e) {
+          if (e.key === "Enter") sendMessage();
+        });
+
+      function sendMessage() {
+        const input = document.querySelector(".chat-input");
+        const message = input.value.trim();
+
+        if (message) {
+          const messagesContainer = document.querySelector(".chat-messages");
+          const now = new Date();
+          const time = `${now.getHours().toString().padStart(2, "0")}:${now
+            .getMinutes()
+            .toString()
+            .padStart(2, "0")}`;
+
+          const messageElement = document.createElement("div");
+          messageElement.className = "message user-message";
+          messageElement.innerHTML = `
+          <div class="message-header">
+            <span class="message-author">Вы</span>
+            <span class="message-time">${time}</span>
+          </div>
+          <div class="message-text">${message}</div>
+        `;
+
+          messagesContainer.appendChild(messageElement);
+          input.value = "";
+
+          // Прокрутка к новому сообщению
+          messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+      }
+
+      // Инициализация
+      document.addEventListener("DOMContentLoaded", function () {
+        // Автоматическое переключение вкладки для публичных комнат
+        const roomType = document.querySelector(".room-type").textContent;
+        if (roomType === "Публичная") {
+          // Скрываем вкладку голосового чата для публичных комнат
+          document.querySelector(
+            ".tab[onclick=\"switchTab('voice')\"]"
+          ).style.display = "none";
+          document.querySelector(".room-type").classList.add("public");
+        }
+      });
+    </script>
+  </body>
+</html>
