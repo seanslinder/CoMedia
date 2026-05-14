@@ -11,3 +11,5 @@ build/
 .feature-mcp/
 
 .DS_Store
+
+server/media
