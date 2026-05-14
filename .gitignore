@@ -5,8 +5,9 @@ dist/
 build/
 *.log
 
-# Ignore feature-mcp files
+.github/
+.vscode/
+
 .feature-mcp/
 
-# Ignore macOS system files
 .DS_Store
