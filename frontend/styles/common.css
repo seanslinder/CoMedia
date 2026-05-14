@@ -1,0 +1,93 @@
+* {
+	margin: 0;
+	padding: 0;
+	box-sizing: border-box;
+	font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.logo-container {
+	display: flex;
+	align-items: center;
+	gap: var(--logo-gap, 15px);
+}
+
+.logo-icon {
+	position: relative;
+	width: var(--logo-size, 70px);
+	height: var(--logo-size, 70px);
+}
+
+.logo-segment {
+	position: absolute;
+	width: var(--logo-segment-size, 33px);
+	height: var(--logo-segment-size, 33px);
+	background: var(--accent);
+}
+
+.segment-1 {
+	top: 0;
+	left: 0;
+	border-radius: 100% 2px 5px 2px;
+}
+
+.segment-2 {
+	top: 0;
+	right: 0;
+	border-radius: 2px 100% 2px 5px;
+}
+
+.segment-3 {
+	bottom: 0;
+	left: 0;
+	border-radius: 2px 5px 2px 100%;
+}
+
+.segment-4 {
+	bottom: 0;
+	right: 0;
+	border-radius: 100% 5px 5px 5px;
+	background: transparent;
+	border: 2px solid var(--accent);
+}
+
+.logo-text {
+	display: flex;
+	align-items: var(--logo-text-align, center);
+	font-size: var(--logo-font-size, 2.5rem);
+	font-weight: 800;
+	letter-spacing: -0.5px;
+	height: var(--logo-text-height, auto);
+}
+
+.logo-co {
+	color: var(--accent);
+	position: relative;
+	padding-right: 2px;
+}
+
+.logo-co:after {
+	content: "";
+	position: absolute;
+	bottom: var(--logo-underline-offset, -5px);
+	left: 0;
+	width: calc(100% + 1px);
+	height: var(--logo-underline-height, 3px);
+	background: var(--accent);
+	border-radius: 3px 0 0 3px;
+}
+
+.logo-media {
+	color: var(--text-primary);
+	position: relative;
+}
+
+.logo-media:after {
+	content: "";
+	position: absolute;
+	bottom: var(--logo-underline-offset, -5px);
+	left: 0;
+	width: calc(100% + 1px);
+	height: var(--logo-underline-height, 3px);
+	background: var(--text-primary);
+	border-radius: 0 3px 3px 0;
+}

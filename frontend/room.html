@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="ru">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>CoMedia — Комната просмотра</title>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+		/>
+		<link rel="stylesheet" href="styles/common.css" />
+		<link rel="stylesheet" href="styles/room.css" />
+	</head>
+	<body>
+		<!-- Шапка комнаты -->
+		<header class="room-header">
+			<div class="logo-container">
+				<div class="logo-icon">
+					<div class="logo-segment segment-1"></div>
+					<div class="logo-segment segment-2"></div>
+					<div class="logo-segment segment-3"></div>
+					<div class="logo-segment segment-4"></div>
+				</div>
+				<div class="logo-text">
+					<span class="logo-co">Co</span>
+					<span class="logo-media">Media</span>
+				</div>
+
+				<div class="room-info">
+					<div class="room-name">Вечер ужасов с друзьями</div>
+					<div class="room-type">Приватная</div>
+				</div>
+			</div>
+
+			<div class="header-controls">
+				<button class="leave-btn">
+					<i class="fas fa-sign-out-alt"></i>
+					Покинуть
+				</button>
+			</div>
+		</header>
+
+		<!-- Основной контейнер -->
+		<div class="room-container">
+			<!-- Медиа-область -->
+			<div class="media-area">
+				<div
+					id="inline-message"
+					class="inline-message"
+					role="status"
+					aria-live="polite"
+				></div>
+				<div class="player-wrapper">
+					<div class="player-placeholder">
+						<div class="player-icon">
+							<i class="fas fa-film"></i>
+						</div>
+						<div class="player-title">Загрузка видео...</div>
+						<div class="player-subtitle">Подождите пару секунд</div>
+					</div>
+				</div>
+
+				<div class="media-info">
+					<div class="media-title">Загрузка...</div>
+				</div>
+			</div>
+
+			<!-- Боковая панель -->
+			<div class="sidebar">
+				<!-- Вкладки -->
+				<div class="tabs">
+					<div class="tab active" data-tab="chat">
+						<i class="fas fa-comment-alt"></i>
+					</div>
+					<div class="tab" data-tab="participants">
+						<i class="fas fa-users"></i>
+					</div>
+				</div>
+
+				<!-- Содержимое вкладки "Чат" -->
+				<div class="tab-content active" id="chat-tab">
+					<div class="chat-messages"></div>
+
+					<div class="chat-input-container">
+						<input
+							type="text"
+							class="chat-input"
+							placeholder="Напишите сообщение..."
+						/>
+						<button class="chat-send-btn">
+							<i class="fas fa-paper-plane"></i>
+						</button>
+					</div>
+				</div>
+
+				<!-- Содержимое вкладки "Участники" -->
+				<div class="tab-content" id="participants-tab">
+					<div class="participants-list"></div>
+				</div>
+			</div>
+		</div>
+
+		<script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+		<script src="api.js"></script>
+		<script src="room_logic.js"></script>
+		<script src="room_ui.js"></script>
+	</body>
+</html>

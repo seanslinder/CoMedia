@@ -1,0 +1,15 @@
+{
+  "servers": {
+    "feature-mcp": {
+      "args": [
+        "stdio",
+        "--server",
+        "http://localhost:4200",
+        "--repo-id",
+        "srw"
+      ],
+      "command": "feature-mcp",
+      "type": "stdio"
+    }
+  }
+}

@@ -1,0 +1,73 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         String     @id @default(uuid())
+  username   String     @unique
+  created_at DateTime   @default(now())
+  
+  ownedRooms Room[]     @relation("RoomOwner")
+  roomUsers  RoomUser[]
+  messages   Message[]
+}
+
+model Room {
+  id         String     @id @default(uuid())
+  name       String
+  is_private Boolean    @default(false)
+  password   String?
+  owner_id   String
+  
+  owner      User       @relation("RoomOwner", fields: [owner_id], references: [id])
+  roomUsers  RoomUser[]
+  messages   Message[]
+  queue      QueueItem[]
+}
+
+model RoomUser {
+  id      String @id @default(uuid())
+  user_id String
+  room_id String
+  role    String @default("guest") // "guest" or "admin"
+  
+  user    User   @relation(fields: [user_id], references: [id])
+  room    Room   @relation(fields: [room_id], references: [id])
+
+  @@unique([user_id, room_id])
+}
+
+model Media {
+  id       String      @id @default(uuid())
+  url      String
+  title    String?
+  duration Int?
+  
+  queue    QueueItem[]
+}
+
+model QueueItem {
+  id       String @id @default(uuid())
+  room_id  String
+  media_id String
+  position Int
+  
+  room     Room   @relation(fields: [room_id], references: [id])
+  media    Media  @relation(fields: [media_id], references: [id])
+}
+
+model Message {
+  id         String   @id @default(uuid())
+  room_id    String
+  user_id    String
+  text       String
+  created_at DateTime @default(now())
+  
+  room       Room     @relation(fields: [room_id], references: [id])
+  user       User     @relation(fields: [user_id], references: [id])
+}

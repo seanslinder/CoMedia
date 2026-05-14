@@ -1,0 +1,8 @@
+{
+  "id": "frontend-structure-bugfix-review-mp50el63",
+  "title": "Frontend structure + bugfix review",
+  "description": "Perform a code review focusing on frontend structure, identify bugs/risks, and refactor to improve structure (including moving inline CSS to separate files) based on user preferences.",
+  "status": "active",
+  "createdAt": "2026-05-14T04:49:40.011361Z",
+  "updatedAt": "2026-05-14T09:40:33.23865Z"
+}

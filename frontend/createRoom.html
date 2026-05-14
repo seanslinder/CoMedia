@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="ru">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>CoMedia — Создание комнаты</title>
+		<link
+			rel="stylesheet"
+			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+		/>
+		<style>
+			:root {
+				--bg-primary: #121212;
+				--bg-secondary: #1e1e1e;
+				--bg-tertiary: #2d2d2d;
+				--text-primary: #ffffff;
+				--text-secondary: #b3b3b3;
+				--accent: #ff214f; /* Новый розовый акцентный цвет */
+				--accent-hover: #ff527c; /* Светлый оттенок розового для hover */
+				--error: #ff5252;
+				--success: #00c853;
+				--public: #4fc3f7;
+				--private: #ffa726;
+				--border-radius: 12px;
+				--shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+				--transition: all 0.3s ease;
+			}
+
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+				font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+			}
+
+			body {
+				background-color: var(--bg-primary);
+				color: var(--text-primary);
+				line-height: 1.6;
+				<link rel="stylesheet" href="styles/common.css" />
+				<link rel="stylesheet" href="styles/createRoom.css" />
+						class="form-control"
+						placeholder="Например: Вечер ужасов с друзьями"
+						id="room-name"
+					/>
+				</div>
+
+				<div class="form-group private-section" style="display: none">
+					<label class="form-label">Пароль</label>
+					<div class="password-options">
+						<input
+							type="password"
+							class="form-control"
+							placeholder="••••••••"
+							id="room-password"
+						/>
+						<div class="password-toggle" id="password-toggle">
+							<i class="fas fa-eye" id="password-icon"></i>
+						</div>
+					</div>
+					<div class="password-generator">
+						Не придумали пароль?
+						<a href="#" id="generate-password">Сгенерировать надежный пароль</a>
+					</div>
+				</div>
+
+
+			<div class="form-section">
+				<h2 class="form-title">Выбор контента</h2>
+
+				<div class="form-group">
+					<label class="form-label">Вставьте ссылку на контент</label>
+					<input
+						type="url"
+						class="form-control"
+						placeholder="https://youtube.com/watch?v=..."
+						id="media-url"
+					/>
+				</div>
+
+				<div class="form-group">
+					<label class="form-label">Или загрузите MP4 файл</label>
+					<input
+						type="file"
+						class="form-control"
+						id="media-file"
+						accept="video/mp4"
+					/>
+				</div>
+			</div>
+
+			<div class="btn-container">
+				<button class="btn btn-secondary">
+					<i class="fas fa-times"></i> Отмена
+				</button>
+				<button class="btn btn-primary" id="create-room-btn">
+					<i class="fas fa-check"></i> Создать комнату
+				</button>
+			</div>
+		</div>
+
+		<script src="api.js"></script>
+		<script src="createRoom.js"></script>
+	</body>
+</html>

@@ -1,0 +1,252 @@
+:root {
+	--bg-primary: #121212;
+	--bg-secondary: #1e1e1e;
+	--bg-tertiary: #2d2d2d;
+	--text-primary: #ffffff;
+	--text-secondary: #b3b3b3;
+	--accent: #ff214f;
+	--accent-hover: #ff527c;
+	--error: #ff5252;
+	--success: #00c853;
+	--border-radius: 12px;
+	--shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+	--transition: all 0.3s ease;
+	--logo-size: 70px;
+	--logo-segment-size: 33px;
+	--logo-font-size: 2.5rem;
+	--logo-underline-height: 3px;
+	--logo-underline-offset: -5px;
+	--logo-gap: 15px;
+}
+
+body {
+	background-color: var(--bg-primary);
+	color: var(--text-primary);
+	line-height: 1.6;
+	overflow-x: hidden;
+}
+
+.container {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 0 20px;
+}
+
+header {
+	padding: 24px 0;
+	text-align: center;
+	border-bottom: 1px solid var(--bg-tertiary);
+	margin-bottom: 40px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.section-title {
+	font-size: 1.8rem;
+	margin-bottom: 24px;
+	color: var(--text-primary);
+}
+
+.section-subtitle {
+	color: var(--text-secondary);
+	margin-bottom: 16px;
+	font-size: 1.1rem;
+}
+
+.rooms-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+	gap: 24px;
+	margin-top: 20px;
+}
+
+.room-card {
+	background: var(--bg-secondary);
+	border-radius: var(--border-radius);
+	overflow: hidden;
+	transition: var(--transition);
+	box-shadow: var(--shadow);
+	cursor: pointer;
+}
+
+.room-card:hover {
+	transform: translateY(-5px);
+	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+.room-preview {
+	height: 160px;
+	background: linear-gradient(45deg, #3d3d3d, #5a5a5a);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: var(--text-secondary);
+	font-size: 1.2rem;
+}
+
+.room-content {
+	padding: 16px;
+}
+
+.room-title {
+	font-size: 1.3rem;
+	margin-bottom: 8px;
+}
+
+.room-content-details {
+	color: var(--text-secondary);
+	font-size: 0.95rem;
+	margin-bottom: 12px;
+	display: flex;
+	justify-content: space-between;
+}
+
+.participants-count {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.join-btn {
+	width: 100%;
+	padding: 10px;
+	background: var(--accent);
+	color: white;
+	border: none;
+	border-radius: 8px;
+	font-weight: 600;
+	cursor: pointer;
+	transition: var(--transition);
+}
+
+.join-btn:hover {
+	background: var(--accent-hover);
+}
+
+.private-room-section {
+	background: var(--bg-secondary);
+	padding: 30px;
+	border-radius: var(--border-radius);
+	margin-bottom: 40px;
+	box-shadow: var(--shadow);
+}
+
+.inline-message {
+	display: none;
+	margin-bottom: 20px;
+	padding: 12px 16px;
+	border-radius: 10px;
+	background: var(--bg-secondary);
+	border: 1px solid var(--bg-tertiary);
+	color: var(--text-secondary);
+}
+
+.inline-message.error {
+	border-color: var(--error);
+	color: var(--error);
+}
+
+.inline-message.success {
+	border-color: var(--success);
+	color: var(--success);
+}
+
+.input-group {
+	margin-bottom: 20px;
+}
+
+.input-group label {
+	display: block;
+	margin-bottom: 8px;
+	font-weight: 500;
+}
+
+.input-field {
+	width: 100%;
+	padding: 12px 16px;
+	background: var(--bg-tertiary);
+	border: 1px solid var(--bg-tertiary);
+	border-radius: 8px;
+	color: var(--text-primary);
+	font-size: 1rem;
+	transition: var(--transition);
+}
+
+.input-field:focus {
+	outline: none;
+	border-color: var(--accent);
+	box-shadow: 0 0 0 2px rgba(124, 77, 255, 0.3);
+}
+
+.btn-primary {
+	background: var(--accent);
+	color: white;
+	border: none;
+	padding: 12px 24px;
+	border-radius: 8px;
+	font-weight: 600;
+	font-size: 1rem;
+	cursor: pointer;
+	transition: var(--transition);
+}
+
+.btn-primary:hover {
+	background: var(--accent-hover);
+}
+
+.create-room {
+	position: fixed;
+	bottom: 24px;
+	right: 18px;
+	z-index: 100;
+}
+
+@media (max-width: 768px) {
+	.rooms-grid {
+		grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+	}
+
+	.private-room-section {
+		padding: 20px;
+	}
+
+	.logo {
+		font-size: 2rem;
+	}
+
+	.section-title {
+		font-size: 1.5rem;
+	}
+
+	.logo-icon {
+		width: 55px;
+		height: 55px;
+	}
+
+	.logo-text {
+		font-size: 2rem;
+	}
+}
+
+@media (max-width: 480px) {
+	.rooms-grid {
+		grid-template-columns: 1fr;
+	}
+
+	.create-room {
+		width: 90%;
+		left: 50%;
+		right: auto;
+		transform: translateX(-50%);
+	}
+
+	.logo-icon {
+		width: 45px;
+		height: 45px;
+	}
+
+	.logo-text {
+		font-size: 1.7rem;
+	}
+}
