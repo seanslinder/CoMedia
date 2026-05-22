@@ -114,6 +114,45 @@ export const initSocket = (server: http.Server) => {
       socket.to(roomId).emit('seek', { time });
     });
 
+    socket.on('disconnecting', async () => {
+      for (const roomId of socket.rooms) {
+        if (roomId === socket.id) continue;
+        
+        io.to(roomId).emit('user_left', {
+            username: displayName
+        });
+
+        if (user) {
+          try {
+            await prisma.roomUser.deleteMany({
+              where: { user_id: user.id, room_id: roomId }
+            });
+            const remaining = await prisma.roomUser.findMany({
+              where: { room_id: roomId }
+            });
+            if (remaining.length === 0) {
+              await prisma.message.deleteMany({ where: { room_id: roomId } });
+              await prisma.queueItem.deleteMany({ where: { room_id: roomId } });
+              await prisma.room.deleteMany({ where: { id: roomId } });
+              roomStates.delete(roomId);
+            } else {
+              const hasAdmin = remaining.some(ru => ru.role === 'admin');
+              if (!hasAdmin) {
+                 const newAdmin = remaining[0];
+                 await prisma.roomUser.updateMany({
+                   where: { user_id: newAdmin.user_id, room_id: roomId },
+                   data: { role: 'admin' }
+                 });
+                 io.to(roomId).emit('admin_assigned', { username: newAdmin.user_id });
+              }
+            }
+          } catch(e) {
+            console.error('Cleanup error:', e);
+          }
+        }
+      }
+    });
+
     socket.on('disconnect', () => {
       console.log(`User disconnected: ${displayName}`);
     });
