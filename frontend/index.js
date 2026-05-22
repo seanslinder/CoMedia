@@ -95,7 +95,7 @@ async function joinPrivateRoom() {
 		await performAuth();
 	} catch (err) {
 		showInlineMessage(
-			"Требуется авторизация для входа в приватную комнату.",
+			"Ошибка авторизации. Требуется авторизация для входа в приватную комнату.",
 		);
 		return;
 	}

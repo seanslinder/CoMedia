@@ -21,6 +21,23 @@ document.querySelectorAll(".room-type-btn").forEach((button) => {
 	});
 });
 
+// Выбор категории
+document.querySelectorAll(".category-item").forEach((item) => {
+	item.addEventListener("click", function () {
+		// Убираем активный класс у всех категорий
+		document.querySelectorAll(".category-item").forEach((cat) => {
+			cat.classList.remove("active");
+		});
+
+		// Добавляем активный класс к выбранной категории
+		this.classList.add("active");
+
+		// Сохраняем выбранную категорию
+		const selectedCategory = this.textContent;
+		console.log("Выбрана категория:", selectedCategory);
+	});
+});
+
 function togglePasswordVisibility() {
 	const passwordInput = document.getElementById("room-password");
 	const icon = document.getElementById("password-icon");
@@ -63,7 +80,10 @@ async function createRoom() {
 
 	const mediaUrl = document.getElementById("media-url").value.trim();
 	const mediaFile = document.getElementById("media-file").files[0];
-	if (!mediaUrl && !mediaFile) {
+	if (
+		!document.getElementById("media-url").value.trim() &&
+		!document.getElementById("media-file").files[0]
+	) {
 		showInlineMessage("Пожалуйста, укажите ссылку или загрузите MP4 файл");
 		document.getElementById("media-url").focus();
 		return;

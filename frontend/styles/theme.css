@@ -1,0 +1,102 @@
+:root {
+	/* Backgrounds */
+	--bg-primary: #121212;
+	--bg-secondary: #1e1e1e;
+	--bg-tertiary: #2d2d2d;
+	
+	/* Text */
+	--text-primary: #ffffff;
+	--text-secondary: #b3b3b3;
+	
+	/* Accent & Semantic */
+	--accent: #ff214f;
+	--accent-hover: #ff527c;
+	--error: #ff5252;
+	--success: #00c853;
+	--public: #4fc3f7;
+	--private: #ffa726;
+
+	/* Alphas (used in gradients/focus etc) */
+	--accent-alpha: rgba(255, 33, 79, 0.3);
+	--accent-grad-start: rgba(255, 33, 79, 0.188); /* like #ff214f30 */
+	--accent-grad-end: rgba(255, 138, 128, 0.188); /* like #ff8a8030 */
+	
+	/* Neutral Gradients */
+	--grad-preview-start: #3d3d3d;
+	--grad-preview-end: #5a5a5a;
+
+	/* UI */
+	--border-radius: 12px;
+	--shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+	--shadow-hover: 0 6px 16px rgba(0, 0, 0, 0.4);
+	--transition: all 0.3s ease;
+}
+
+[data-theme="light"] {
+	/* Backgrounds */
+	--bg-primary: #f5f5f5;
+	--bg-secondary: #ffffff;
+	--bg-tertiary: #e0e0e0;
+	
+	/* Text */
+	--text-primary: #121212;
+	--text-secondary: #555555;
+	
+	/* Accent & Semantic (same accent or adjusted) */
+	--accent: #ff214f;
+	--accent-hover: #e01944;
+	--error: #d32f2f;
+	--success: #388e3c;
+	--public: #0288d1;
+	--private: #f57c00;
+
+	/* Alphas */
+	--accent-alpha: rgba(255, 33, 79, 0.2);
+	--accent-grad-start: rgba(255, 33, 79, 0.12);
+	--accent-grad-end: rgba(255, 138, 128, 0.12);
+
+	/* Neutral Gradients */
+	--grad-preview-start: #e0e0e0;
+	--grad-preview-end: #f5f5f5;
+
+	/* UI */
+	--shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+	--shadow-hover: 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* Transitions for fluid theme toggle */
+body, div, input, button, textarea, span, p, label, a {
+	transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Theme Toggle Button & SVG Styles */
+.theme-toggle {
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    border-radius: 50%;
+    transition: var(--transition);
+}
+
+.theme-toggle:hover {
+    background: var(--bg-tertiary);
+}
+
+.theme-toggle .sun-icon {
+    display: block; /* default dark mode -> show sun */
+}
+.theme-toggle .moon-icon {
+    display: none;
+}
+
+[data-theme="light"] .theme-toggle .sun-icon {
+    display: none;
+}
+[data-theme="light"] .theme-toggle .moon-icon {
+    display: block;
+}

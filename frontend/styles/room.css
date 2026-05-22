@@ -1,16 +1,4 @@
 :root {
-	--bg-primary: #121212;
-	--bg-secondary: #1e1e1e;
-	--bg-tertiary: #2d2d2d;
-	--text-primary: #ffffff;
-	--text-secondary: #b3b3b3;
-	--accent: #ff214f;
-	--accent-hover: #ff527c;
-	--public: #4fc3f7;
-	--private: #ffa726;
-	--border-radius: 12px;
-	--shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-	--transition: all 0.3s ease;
 	--logo-size: 40px;
 	--logo-segment-size: 18px;
 	--logo-font-size: 1.6rem;
@@ -136,7 +124,7 @@ body {
 
 .player-wrapper {
 	position: relative;
-	background: #000;
+	background: var(--bg-primary);
 	border-radius: var(--border-radius);
 	overflow: hidden;
 	flex: 1;
@@ -190,7 +178,7 @@ body {
 	border-left: 1px solid var(--bg-tertiary);
 	display: flex;
 	flex-direction: column;
-	box-shadow: -4px 0 12px rgba(0, 0, 0, 0.2);
+	box-shadow: var(--shadow);
 }
 
 .tabs {
@@ -210,7 +198,7 @@ body {
 }
 
 .tab:hover {
-	background: rgba(255, 33, 79, 0.1);
+	background: var(--accent-alpha);
 }
 
 .tab.active {
@@ -248,12 +236,12 @@ body {
 
 .message.user-message {
 	align-self: flex-end;
-	background: rgba(255, 33, 79, 0.15);
+	background: var(--accent-alpha);
 	border-left: 3px solid var(--accent);
 }
 
 .message.system {
-	background: rgba(255, 33, 79, 0.1);
+	background: var(--accent-alpha);
 	border-left: 3px solid var(--accent);
 	padding-left: 12px;
 	align-self: center;
@@ -323,7 +311,7 @@ body {
 .chat-input:focus {
 	outline: none;
 	border-color: var(--accent);
-	box-shadow: 0 0 0 2px rgba(255, 33, 79, 0.2);
+	box-shadow: 0 0 0 2px var(--accent-alpha);
 }
 
 .chat-input:disabled {
@@ -373,7 +361,7 @@ body {
 }
 
 .participant:hover {
-	background: rgba(255, 33, 79, 0.1);
+	background: var(--accent-alpha);
 	transform: translateX(5px);
 }
 
