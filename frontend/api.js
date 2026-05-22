@@ -46,16 +46,19 @@ async function performAuth() {
 			});
 			const data = await loginRes.json();
 			token = data.token;
+			showInlineMessage("Вход выполнен успешно", "success");
+			setTimeout(clearInlineMessage, 3000);
 		} else {
 			const data = await res.json();
 			token = data.token;
+			showInlineMessage("Регистрация успешна", "success");
+			setTimeout(clearInlineMessage, 3000);
 		}
 		if (token) {
 			localStorage.setItem("comedia_token", token);
 			localStorage.setItem("comedia_username", username);
 		}
 	}
-	clearInlineMessage();
 	return { token, username };
 }
 

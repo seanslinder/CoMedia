@@ -23,6 +23,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 		// Fetch room details
 		const room = await apiFetch(`/rooms/${roomId}`);
 		document.querySelector(".room-name").textContent = room.name;
+		
+		const displayAutoId = document.querySelector("#display-room-id");
+		if (displayAutoId) {
+			displayAutoId.textContent = roomId;
+		}
+
 		const roomTypeEl = document.querySelector(".room-type");
 		if (roomTypeEl) {
 			roomTypeEl.textContent = room.is_private
@@ -210,6 +216,20 @@ function setupSocket(token) {
 	socket.on("message_received", (data) => {
 		appendChatMessage(data.user, data.text, new Date(data.time));
 	});
+
+	socket.on("user_left", async (data) => {
+		try {
+			const updatedRoom = await apiFetch(`/rooms/${roomId}`);
+			renderParticipants(updatedRoom);
+		} catch (e) { console.error("Error refreshing room after user left", e); }
+	});
+
+	socket.on("admin_assigned", async (data) => {
+		try {
+			const updatedRoom = await apiFetch(`/rooms/${roomId}`);
+			renderParticipants(updatedRoom);
+		} catch (e) {}
+	});
 }
 
 function setupVideoEvents() {
@@ -293,3 +313,12 @@ function appendChatMessage(author, text, date) {
 	messagesContainer.appendChild(messageElement);
 	messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
+
+window.copyRoomId = function() {
+	const roomIdText = document.querySelector("#display-room-id").textContent;
+	navigator.clipboard.writeText(roomIdText).then(() => {
+		showInlineMessage("ID комнаты скопирован!", "success");
+	}).catch(() => {
+		showInlineMessage("Ошибка при копировании ID");
+	});
+};
