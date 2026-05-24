@@ -18,10 +18,7 @@ function switchTab(tabName) {
 }
 
 function leaveRoom() {
-	if (confirm("Вы уверены, что хотите покинуть комнату?")) {
-		alert("Вы покинули комнату");
-		window.location.href = "index.html";
-	}
+	window.location.href = "index.html";
 }
 
 document.addEventListener("DOMContentLoaded", () => {

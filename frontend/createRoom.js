@@ -126,10 +126,9 @@ async function createRoom() {
 			body: JSON.stringify({ url: resolvedUrl }),
 		});
 
-		alert(`Комната "${roomName}" успешно создана!`);
-		window.location.href = "room.html?id=" + room.id;
+		window.location.href = "room?id=" + room.id;
 	} catch (e) {
-		showInlineMessage("Ошибка создания комнаты: " + e.message);
+		showInlineMessage(e.message || "Ошибка создания комнаты");
 	}
 }
 
@@ -160,6 +159,32 @@ document.addEventListener("DOMContentLoaded", () => {
 			}
 		});
 	}
+
+	// Toggle room type setup
+	document.querySelectorAll(".room-type-btn").forEach((button) => {
+		button.addEventListener("click", () => {
+			document.querySelectorAll(".room-type-btn").forEach((btn) => {
+				btn.classList.remove("active");
+			});
+
+			button.classList.add("active");
+			const roomType = button.getAttribute("data-type");
+
+			setPrivateSectionVisibility(roomType === "private");
+		});
+	});
+
+	// Select category
+	document.querySelectorAll(".category-item").forEach((item) => {
+		item.addEventListener("click", function () {
+			document.querySelectorAll(".category-item").forEach((cat) => {
+				cat.classList.remove("active");
+			});
+			this.classList.add("active");
+			const selectedCategory = this.textContent;
+			console.log("Выбрана категория:", selectedCategory);
+		});
+	});
 
 	const passwordToggle = document.getElementById("password-toggle");
 	if (passwordToggle) {
@@ -193,13 +218,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	if (cancelButton) {
 		cancelButton.addEventListener("click", (e) => {
 			e.preventDefault();
-			if (
-				confirm(
-					"Вы уверены, что хотите отменить создание комнаты? Все несохраненные данные будут потеряны.",
-				)
-			) {
-				window.location.href = "index.html";
-			}
+			window.location.href = "index.html";
 		});
 	}
 });

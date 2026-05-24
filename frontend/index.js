@@ -70,9 +70,9 @@ async function joinRoom(id) {
 				body: JSON.stringify({ roomId: id }),
 			});
 		}
-		window.location.href = `room.html?id=${id}`;
+		window.location.href = `room?id=${id}`;
 	} catch (e) {
-		showInlineMessage("Ошибка входа в комнату.");
+		showInlineMessage(e.message || "Ошибка входа в комнату.");
 	}
 }
 
@@ -105,8 +105,8 @@ async function joinPrivateRoom() {
 			method: "POST",
 			body: JSON.stringify(payload),
 		});
-		window.location.href = `room.html?id=${roomId}`;
+		window.location.href = `room?id=${roomId}`;
 	} catch (err) {
-		showInlineMessage("Ошибка входа в комнату.");
+		showInlineMessage(err.message || "Ошибка входа в комнату.");
 	}
 }
