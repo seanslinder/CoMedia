@@ -1,53 +1,33 @@
-// Toggle room type
-
-document.querySelectorAll(".room-type-btn").forEach((button) => {
-	button.addEventListener("click", () => {
-		document.querySelectorAll(".room-type-btn").forEach((btn) => {
-			btn.classList.remove("active");
-		});
-
-		button.classList.add("active");
-		const roomType = button.getAttribute("data-type");
-
-		if (roomType === "public") {
-			document.querySelectorAll(".private-section").forEach((el) => {
-				el.style.display = "none";
-			});
-		} else {
-			document.querySelectorAll(".private-section").forEach((el) => {
-				el.style.display = "block";
-			});
-		}
+// Helper to set visibility of private sections
+function setPrivateSectionVisibility(show) {
+	document.querySelectorAll(".private-section").forEach((el) => {
+		el.style.display = show ? "block" : "none";
 	});
-});
-
-// Выбор категории
-document.querySelectorAll(".category-item").forEach((item) => {
-	item.addEventListener("click", function () {
-		// Убираем активный класс у всех категорий
-		document.querySelectorAll(".category-item").forEach((cat) => {
-			cat.classList.remove("active");
-		});
-
-		// Добавляем активный класс к выбранной категории
-		this.classList.add("active");
-
-		// Сохраняем выбранную категорию
-		const selectedCategory = this.textContent;
-		console.log("Выбрана категория:", selectedCategory);
-	});
-});
+}
 
 function togglePasswordVisibility() {
 	const passwordInput = document.getElementById("room-password");
 	const icon = document.getElementById("password-icon");
+	if (!passwordInput) return;
 
 	if (passwordInput.type === "password") {
 		passwordInput.type = "text";
-		icon.classList.replace("fa-eye", "fa-eye-slash");
+		if (icon) {
+			if (icon.classList.contains("fa-eye")) {
+				icon.classList.replace("fa-eye", "fa-eye-slash");
+			} else {
+				icon.classList.add("fa-eye-slash");
+			}
+		}
 	} else {
 		passwordInput.type = "password";
-		icon.classList.replace("fa-eye-slash", "fa-eye");
+		if (icon) {
+			if (icon.classList.contains("fa-eye-slash")) {
+				icon.classList.replace("fa-eye-slash", "fa-eye");
+			} else {
+				icon.classList.add("fa-eye");
+			}
+		}
 	}
 }
 
@@ -58,19 +38,27 @@ function generatePassword() {
 	for (let i = 0; i < 12; i++) {
 		password += chars.charAt(Math.floor(Math.random() * chars.length));
 	}
-	document.getElementById("room-password").value = password;
-
-	const icon = document.getElementById("password-icon");
 	const passwordInput = document.getElementById("room-password");
-	passwordInput.type = "text";
-	icon.classList.replace("fa-eye", "fa-eye-slash");
+	if (passwordInput) {
+		passwordInput.value = password;
+		passwordInput.type = "text";
+	}
+	const icon = document.getElementById("password-icon");
+	if (icon) {
+		if (icon.classList.contains("fa-eye")) {
+			icon.classList.replace("fa-eye", "fa-eye-slash");
+		} else {
+			icon.classList.add("fa-eye-slash");
+		}
+	}
 }
 
 async function createRoom() {
-	const roomName = document.getElementById("room-name").value.trim();
-	const roomType = document
-		.querySelector(".room-type-btn.active")
-		.getAttribute("data-type");
+	const roomNameEl = document.getElementById("room-name");
+	const roomName = roomNameEl ? roomNameEl.value.trim() : "";
+
+	const activeBtn = document.querySelector(".room-type-btn.active");
+	const roomType = activeBtn ? activeBtn.getAttribute("data-type") : "public";
 
 	if (!roomName) {
 		showInlineMessage("Пожалуйста, введите название комнаты");
@@ -78,20 +66,24 @@ async function createRoom() {
 		return;
 	}
 
-	const mediaUrl = document.getElementById("media-url").value.trim();
-	const mediaFile = document.getElementById("media-file").files[0];
-	if (
-		!document.getElementById("media-url").value.trim() &&
-		!document.getElementById("media-file").files[0]
-	) {
+	const mediaUrlEl = document.getElementById("media-url");
+	const mediaFileEl = document.getElementById("media-file");
+	const mediaUrl = mediaUrlEl ? mediaUrlEl.value.trim() : "";
+	const mediaFile = mediaFileEl && mediaFileEl.files ? mediaFileEl.files[0] : null;
+
+	if (!mediaUrl && !mediaFile) {
 		showInlineMessage("Пожалуйста, укажите ссылку или загрузите MP4 файл");
-		document.getElementById("media-url").focus();
+		if (mediaUrlEl) mediaUrlEl.focus();
 		return;
 	}
 
 	clearInlineMessage();
 	try {
-		await performAuth();
+		// avoid duplicate auth requests when token already present
+		const token = localStorage.getItem("comedia_token");
+		if (!token) {
+			await performAuth();
+		}
 	} catch (e) {
 		showInlineMessage("Требуется авторизация для создания комнаты.");
 		return;
