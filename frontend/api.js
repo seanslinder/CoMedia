@@ -19,6 +19,12 @@ function clearInlineMessage() {
 	messageEl.style.display = "none";
 }
 
+window.logout = function() {
+	localStorage.removeItem("comedia_token");
+	localStorage.removeItem("comedia_username");
+	window.location.reload();
+};
+
 async function performAuth() {
 	let token = localStorage.getItem("comedia_token");
 	let username = localStorage.getItem("comedia_username");
