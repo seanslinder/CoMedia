@@ -67,10 +67,21 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 		// Setup real video player
 		const wrapper = document.querySelector(".player-wrapper");
-		wrapper.innerHTML = `<video id="room-video" controls crossorigin playsinline style="width: 100%; height: 100%; object-fit: contain;">
-			<source src="${mediaUrl}" type="video/mp4">
-		</video>`;
+		wrapper.innerHTML = `<video id="room-video" src="${mediaUrl}" controls crossorigin playsinline style="width: 100%; height: 100%; object-fit: contain;"></video>`;
+		
 		videoEl = document.getElementById("room-video");
+		videoEl.onerror = () => {
+			const playerWrapper = document.querySelector(".player-wrapper");
+			playerWrapper.innerHTML = `
+				<div class="player-placeholder error">
+					<div class="player-icon" style="color: #ff5252;">
+						<i class="fas fa-exclamation-triangle"></i>
+					</div>
+					<div class="player-title">Ошибка загрузки медиа</div>
+					<div class="player-subtitle">Не удалось загрузить видеофайл. Проверьте ссылку.</div>
+				</div>
+			`;
+		};
 
 		setupSocket(token);
 		setupVideoEvents();
@@ -177,7 +188,8 @@ function setupSocket(token) {
 
 	socket.on("room_error", (data) => {
 		const message = data && data.error ? data.error : "Ошибка комнаты.";
-		showInlineMessage(message);
+		alert(message);
+		window.location.href = "index.html";
 	});
 
 	socket.emit("join_room", { roomId });
