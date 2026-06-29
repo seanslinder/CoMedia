@@ -5,6 +5,29 @@ let socket;
 let videoEl;
 let isRemoteUpdate = false;
 let isGuest = false;
+const suppressedMediaEvents = new Set();
+
+function suppressMediaEvent(eventName) {
+	suppressedMediaEvents.add(eventName);
+	window.setTimeout(() => {
+		suppressedMediaEvents.delete(eventName);
+	}, 1000);
+}
+
+function withRemoteMediaUpdate(expectedEvents, applyUpdate) {
+	const events = Array.isArray(expectedEvents)
+		? expectedEvents
+		: [expectedEvents];
+	isRemoteUpdate = true;
+	events.forEach((eventName) => suppressMediaEvent(eventName));
+	try {
+		applyUpdate();
+	} finally {
+		window.setTimeout(() => {
+			isRemoteUpdate = false;
+		}, 0);
+	}
+}
 
 document.addEventListener("DOMContentLoaded", async () => {
 	if (!roomId) {
@@ -195,34 +218,37 @@ function setupSocket(token) {
 	socket.emit("join_room", { roomId });
 
 	socket.on("sync_state", (state) => {
-		isRemoteUpdate = true;
-		videoEl.currentTime = state.time;
 		if (state.isPlaying) {
-			videoEl.play().catch((e) => console.log(e));
+			withRemoteMediaUpdate(["seeked", "play"], () => {
+				videoEl.currentTime = state.time;
+				videoEl.play().catch((e) => console.log(e));
+			});
 		} else {
-			videoEl.pause();
+			withRemoteMediaUpdate(["seeked", "pause"], () => {
+				videoEl.currentTime = state.time;
+				videoEl.pause();
+			});
 		}
-		isRemoteUpdate = false;
 	});
 
 	socket.on("play", ({ time }) => {
-		isRemoteUpdate = true;
-		videoEl.currentTime = time;
-		videoEl.play().catch((e) => console.log(e));
-		isRemoteUpdate = false;
+		withRemoteMediaUpdate(["seeked", "play"], () => {
+			videoEl.currentTime = time;
+			videoEl.play().catch((e) => console.log(e));
+		});
 	});
 
 	socket.on("pause", ({ time }) => {
-		isRemoteUpdate = true;
-		videoEl.currentTime = time;
-		videoEl.pause();
-		isRemoteUpdate = false;
+		withRemoteMediaUpdate(["seeked", "pause"], () => {
+			videoEl.currentTime = time;
+			videoEl.pause();
+		});
 	});
 
 	socket.on("seek", ({ time }) => {
-		isRemoteUpdate = true;
-		videoEl.currentTime = time;
-		isRemoteUpdate = false;
+		withRemoteMediaUpdate("seeked", () => {
+			videoEl.currentTime = time;
+		});
 	});
 
 	socket.on("message_received", (data) => {
@@ -246,17 +272,17 @@ function setupSocket(token) {
 
 function setupVideoEvents() {
 	videoEl.addEventListener("play", () => {
-		if (!isRemoteUpdate)
+		if (!isRemoteUpdate && !suppressedMediaEvents.has("play"))
 			socket.emit("play", { roomId, time: videoEl.currentTime });
 	});
 
 	videoEl.addEventListener("pause", () => {
-		if (!isRemoteUpdate)
+		if (!isRemoteUpdate && !suppressedMediaEvents.has("pause"))
 			socket.emit("pause", { roomId, time: videoEl.currentTime });
 	});
 
 	videoEl.addEventListener("seeked", () => {
-		if (!isRemoteUpdate)
+		if (!isRemoteUpdate && !suppressedMediaEvents.has("seeked"))
 			socket.emit("seek", { roomId, time: videoEl.currentTime });
 	});
 }
