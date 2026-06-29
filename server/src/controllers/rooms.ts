@@ -47,6 +47,21 @@ export const getPublicRooms = async (req: Request, res: Response) => {
   }
 };
 
+// GET /rooms/me
+export const getMyRooms = async (req: Request, res: Response) => {
+  const user = (req as any).user;
+  if (!user) return res.status(401).json({ error: 'Authentication required' });
+
+  try {
+    const rooms = await prisma.room.findMany({
+      where: { owner_id: user.id }
+    });
+    res.json(rooms);
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 // POST /rooms/join
 export const joinRoom = async (req: Request, res: Response) => {
   const { roomId, password } = req.body;
