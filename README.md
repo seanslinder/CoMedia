@@ -2,6 +2,10 @@
 
 CoMedia is a watch party application for vieweing content by creating rooms and inviting friends. This app is an architectural prototype of my Scientific Research Work at TSU
 
+## Project artifacts
+
+See [docs/comedia-artifacts.md](docs/comedia-artifacts.md) for the project diagrams and demo video information.
+
 ## Local run instructions
 
 Prerequisites
